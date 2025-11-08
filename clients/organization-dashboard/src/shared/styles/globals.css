@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ytp-youtube-button.ytp-button,
+.yt-uix-sessionlink {
+  display: none !important;
+}
+/* chart menu icon css */
+.apexcharts-toolbar {
+  display: none !important;
+}
+g#SvgjsG1303 {
+  display: none !important;
+}
+
+g#SvgjsG1322 {
+  display: none !important;
+}
+g#SvgjsG1510 {
+  display: none !important;
+}
+
+g#SvgjsG1480 {
+  display: none !important;
+}
+g#SvgjsG1425 {
+  display: none !important;
+}
+
+g#SvgjsG1406 {
+  display: none !important;
+}
+
+text#SvgjsText1435 {
+  display: none !important;
+}
+svg.text-default-300 {
+  color: #5a5a5a;
+}
+circle#SvgjsCircle1157 {
+  display: none !important;
+}
+
+g#SvgjsG1158 {
+  display: none !important;
+}
+
+circle#SvgjsCircle1138 {
+  display: none !important;
+}
+
+g#SvgjsG1139 {
+  display: none !important;
+}
+/* rechart css */
+g.recharts-layer.recharts-cartesian-axis-tick {
+  font-size: 12px;
+}
+/* top-students css */
+#top-students .css-fcajrz {
+  height: auto;
+}
+/* delete svg css */
+svg.bi.bi-trash3 {
+  width: 15px;
+  height: 15px;
+}
+
+.custom-sidebar.pro-sidebar .pro-sidebar-inner .pro-sidebar-layout {
+  @apply sidebar-scrollbar;
+}
+
+.ql-editor {
+  min-height: 100px;
+  max-height: 400px;
+  overflow: auto;
+}
+.ql-editor::-webkit-scrollbar {
+  display: none;
+}
+.ql-editor {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ql-container.ql-snow {
+  border: none !important;
+}
+
+.ql-toolbar.ql-snow {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+.ql-editor {
+  padding-bottom: 24px !important;
+}
+
+.unreset body {
+  @apply m-4 h-auto;
+}
+
+.unreset ul,
+.unreset ol {
+  @apply list-disc pl-4 mb-4;
+}
+
+.unreset ol {
+  list-style-type: decimal;
+}
+
+.unreset ul > li {
+  @apply list-disc pl-4 mb-1; /* Adjust margin for nested lists */
+}
+
+.unreset ol > li {
+  @apply list-decimal pl-4 mb-1; /* Adjust margin for nested lists */
+}
+
+.unreset h1 {
+  @apply text-3xl font-bold mb-2;
+}
+
+.unreset h2 {
+  @apply text-2xl font-bold mb-2.5;
+}
+
+.unreset h3 {
+  @apply text-xl font-bold mb-3;
+}
+
+.unreset h4 {
+  @apply text-lg font-bold mb-4;
+}
+
+.unreset h5 {
+  @apply text-base font-bold mb-5;
+}
+
+.unreset h6 {
+  @apply text-sm font-bold mb-6;
+}

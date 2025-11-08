@@ -1,0 +1,41 @@
+import { Course } from "./course"
+import { Student } from "./student"
+import {Teacher} from "./teacher"
+import {Invoice} from "./invoice"
+
+model Coupon {
+  id Int @id @default(autoincrement())
+
+  name String @default("Coupon")
+
+  code String
+
+  discount Float
+  type     CouponType
+
+  couponUsed CouponUsed[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Invoice Invoice[]
+}
+
+
+
+enum CouponType {
+  percent
+  amount
+}
+
+model CouponUsed {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  couponId Int
+  coupon   Coupon @relation(fields: [couponId], references: [id])
+
+  date DateTime @default(now())
+}

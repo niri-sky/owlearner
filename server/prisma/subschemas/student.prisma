@@ -1,0 +1,60 @@
+import {Teacher} from "./teacher"
+import {PostLike,Comment,Post} from "./post"
+import {Ticket,TicketMessage} from "./ticket"
+import {FollowingFollower,Link} from "./others"
+import {Invoice} from "./invoice"
+import { Coupon, CouponUsed } from "./coupon"
+import { StudentCourse,Course } from "./course"
+import { CourseReview, QuestionAndAnswer } from "./course"
+import {SenderReceiver} from "./notification"
+import {CourseSale} from "./earning"
+
+model Student {
+  id Int @id @default(autoincrement())
+
+  // user info
+  name      String
+  email     String  @unique
+  password  String?
+  nickName  String?
+  birthDate String?
+  gender    String?
+  biography String?
+
+  profile String?
+
+  cover String?
+
+  username String?
+
+  status StudentStatus @default(active)
+
+  verified Boolean @default(false)
+
+  joinedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation
+  links    Link[]
+  invoices Invoice[]
+
+  following      FollowingFollower[]
+  likes          PostLike[]
+  ticketMessages TicketMessage[]
+  postComments   Comment[]
+  tickets        Ticket[]
+
+  couponUsed CouponUsed[]
+
+  courses StudentCourse[]
+
+  cart           Course[]         @relation("CartToStudent")
+  wishlist       Course[]         @relation("WishlistToStudent")
+  senderReceiver SenderReceiver[]
+  courseSales    CourseSale[]
+}
+
+enum StudentStatus {
+  active
+  banned
+}

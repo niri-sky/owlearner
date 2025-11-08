@@ -1,0 +1,145 @@
+"use client";
+
+import { generateCsv } from "@/shared/utils";
+import {
+  calculateLast8MonthsEarnings,
+  calculateTotalEarnings,
+} from "@/shared/utils/analytics";
+// global package imports
+import { Button } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
+import { FaCircle } from "react-icons/fa";
+import { IoApps } from "react-icons/io5";
+import DashboardChart from "./dashboard-chart";
+
+const dates = [
+  {
+    label: "March 2023",
+  },
+  {
+    label: "April 2023",
+  },
+  {
+    label: "July 2023",
+  },
+];
+
+type Props = {
+  sales: AnalyticsSales[];
+  withdraw?: number;
+  paymentInvoices: PaymentInvoiceType[];
+};
+
+const Statistics = ({ sales, withdraw = 0, paymentInvoices }: Props) => {
+  const { totalEarnings, chartData, availableBalance } = useMemo(() => {
+    const totalEarnings = calculateTotalEarnings(sales);
+
+    const availableBalance = totalEarnings - withdraw;
+
+    const chartData = calculateLast8MonthsEarnings(sales, paymentInvoices);
+
+    return { totalEarnings, chartData, availableBalance };
+  }, [sales, withdraw, paymentInvoices]);
+
+  console.log(chartData, "C Data");
+
+  const handleDownloadReport = () => {
+    const test = [
+      { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
+      { firstname: "Raed", email: "rl@smthing.co.com", lastname: "Labes" },
+      { email: "ymin@cocococo.com", fullName: "Yezzi yo" },
+    ];
+
+    generateCsv(test);
+  };
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex justify-between items-center gap-5">
+        <div className="flex flex-col">
+          <h3 className="text-[20px] font-semibold capitalize text-txt">
+            Statistics
+          </h3>
+          <p className="text-[15px] text-txt">Overview of Profit</p>
+        </div>
+        {/* <div className="w-[140px] !rounded-md">
+          <Select
+            radius="sm"
+            className="w-full !py-0 "
+            defaultSelectedKeys={["0"]}
+          >
+            {dates.map((items, i) => (
+              <SelectItem key={i} value={items.label}>
+                {items.label}
+              </SelectItem>
+            ))}
+          </Select>
+        </div> */}
+      </div>
+      {/*  */}
+      <div className="flex flex-col lg:flex-row gap-3 justify-between">
+        <div className="lg:w-[calc(100%-250px)]">
+          <DashboardChart data={chartData} />
+        </div>
+        <div className="flex w-[220px] flex-col gap-[25px] ">
+          {/*  */}
+          <div className="flex items-center  gap-7">
+            <div>
+              <div className="w-[40px] h-[40px] rounded-md bg-[#ECF2FF] text-[#5d87ff] flex justify-center items-center text-xl">
+                <IoApps />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[22px] font-bold text-txt">
+                ${totalEarnings.toFixed(2)}
+              </h2>
+              <p className="text-txt text-[15px]">Total Earnings</p>
+            </div>
+          </div>
+          {/*  */}
+          <div className="flex items-center  gap-7">
+            <div>
+              <div className="w-[40px] h-[40px] rounded-md bgwhite] text-[#5d87ff] flex justify-center items-center text-[12px]">
+                <FaCircle />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-txt text-[15px]">Available Balance</p>
+              <h2 className="text-xl font-bold text-txt">
+                ${availableBalance.toFixed(2)}
+              </h2>
+            </div>
+          </div>
+          {/*  */}
+          <div className="flex items-center  gap-7">
+            <div>
+              <div className="w-[40px] h-[40px] rounded-md bg-[white] text-[#49beff] flex justify-center items-center text-[12px]">
+                <FaCircle />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-txt text-[15px]">Withdraw Balance</p>
+              <h2 className="text-xl font-bold text-txt">
+                ${withdraw.toFixed(2)}
+              </h2>
+            </div>
+          </div>
+          <div className="w-[180px] ml-auto text-center">
+            <Button
+              onClick={handleDownloadReport}
+              fullWidth
+              radius="sm"
+              color="primary"
+            >
+              ViewFull Report
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Statistics;

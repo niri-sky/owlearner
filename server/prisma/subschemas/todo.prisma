@@ -1,0 +1,14 @@
+import {Admin} from "./admin"
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  note      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation
+  adminId Int
+  admin   Admin @relation(fields: [adminId], references: [id])
+}
+

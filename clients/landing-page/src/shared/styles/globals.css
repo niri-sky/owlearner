@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .container {
+    @apply !w-full !px-[.75rem] mx-auto xl:!max-w-[1320px] lg:!max-w-[1320px] md:!max-w-[992px] sm:!max-w-[768px];
+  }
+}
+
+.unreset body {
+  @apply m-4 h-auto;
+}
+
+.unreset ul,
+.unreset ol {
+  @apply list-disc pl-4 mb-4;
+}
+
+.unreset ol {
+  list-style-type: decimal;
+}
+
+.unreset ul > li {
+  @apply list-disc pl-4 mb-1; /* Adjust margin for nested lists */
+}
+
+.unreset ol > li {
+  @apply list-decimal pl-4 mb-1; /* Adjust margin for nested lists */
+}
+
+.unreset h1 {
+  @apply text-3xl font-bold mb-2;
+}
+
+.unreset h2 {
+  @apply text-2xl font-bold mb-2.5;
+}
+
+.unreset h3 {
+  @apply text-xl font-bold mb-3;
+}
+
+.unreset h4 {
+  @apply text-lg font-bold mb-4;
+}
+
+.unreset h5 {
+  @apply text-base font-bold mb-5;
+}
+
+.unreset h6 {
+  @apply text-sm font-bold mb-6;
+}

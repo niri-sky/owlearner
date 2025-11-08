@@ -1,0 +1,65 @@
+import {Course} from "./course"
+import {Student} from "./student"
+import { Coupon } from "./coupon"
+import { Organization } from "./organization"
+import { Teacher } from "./teacher"
+import {TeacherEarning, OrganizationEarning} from "./earning"
+
+model Invoice {
+      id        Int      @id @default(autoincrement())
+      orderedAt DateTime @default(now())
+
+      price Float
+
+      courses Course[]
+
+      coupon   Coupon? @relation(fields: [couponId], references: [id])
+      couponId Int?
+
+      studentId Int
+      student   Student @relation(fields: [studentId], references: [id])
+}
+
+
+model PaymentInvoice {
+      id Int @id @default(autoincrement())
+
+      userType InvoiceUserType
+
+      amount Float
+
+      requestDate DateTime @default(now())
+
+      bankDetails String
+
+      status InvoiceStatusType @default(pending)
+
+      to InvoiceToType
+
+      organizationId Int?
+      organization   Organization? @relation(fields: [organizationId], references: [id])
+
+      teacherId Int?
+      teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+      teacherEarnings      TeacherEarning[]
+      organizationEarnings OrganizationEarning[]
+}
+
+
+enum InvoiceToType {
+  admin
+  organization
+}
+
+enum InvoiceUserType {
+  teacher
+  organization
+}
+
+enum InvoiceStatusType {
+  declined
+  pending
+  inprogress
+  paid
+}

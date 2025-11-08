@@ -1,0 +1,228 @@
+import {AdminStatus} from "./admin"
+import {Teacher} from "./teacher"
+import {Invoice} from "./invoice"
+import {Coupon} from "./coupon"
+import {Student} from "./student"
+import {CourseSale} from "./earning"
+
+model Course {
+  id Int @id @default(autoincrement())
+
+  slug String @unique
+
+  title               String
+  description         String
+  price               Float
+  estimated_price     Float?
+  demo_file           String
+  duration            String
+  level               String
+  language            String
+  subtitle_language   String?
+  course_tags         String
+  course_category     String
+  course_subcategory  String
+  popular_topics      String
+  thumbnail           String
+  what_you_will_learn String[]
+  course_requirements String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status CourseStatus @default(pending)
+
+  // relation
+  section  CourseSection[]
+  invoices Invoice[]
+
+  studentCourse StudentCourse[]
+
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  wishlistStudent Student[] @relation("CartToStudent")
+  cartStudent     Student[] @relation("WishlistToStudent")
+
+  reviews     CourseReview[]
+  courseSales CourseSale[]
+}
+
+model CourseReview {
+  id     Int    @id @default(autoincrement())
+  rating Float
+  text   String
+
+  createdAt DateTime @default(now())
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId Int
+
+  studentCourse   StudentCourse @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int           @unique
+}
+
+enum CourseStatus {
+  pending
+  live
+  draft
+  declined
+}
+
+model CourseSection {
+  id           Int    @id @default(autoincrement())
+  section_name String
+
+  content CourseContent[]
+
+  // relation
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+}
+
+model CourseContent {
+  id                Int    @id @default(autoincrement())
+  video_title       String
+  video_description String
+  file              String
+
+  resources CourseResourse[]
+
+  video_duration Int?
+
+  // relation
+  sectionId Int
+  section   CourseSection @relation(fields: [sectionId], references: [id])
+
+  links   CourseContentLink[]
+  quizzes CourseContentQuiz[]
+
+  questions QuestionAndAnswer[]
+
+  assignment CourseAssignment?
+
+  studentQuizPoint StudentQuizPoint[]
+}
+
+model CourseResourse {
+  id Int @id @default(autoincrement())
+
+  name String
+  src  String
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+}
+
+model QuestionAndAnswer {
+  id Int @id @default(autoincrement())
+
+  question String
+
+  answer String?
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+}
+
+model CourseAssignment {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  deadline DateTime
+  details  String
+
+  mark Float
+
+  submit StudentAssignmentPoint[]
+
+  // relation 
+  contentId Int           @unique
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}
+
+model StudentCourse {
+  id Int @id @default(autoincrement())
+
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+
+  quiz_points StudentQuizPoint[]
+
+  assignment_points StudentAssignmentPoint[]
+
+  certificate String?
+
+  status StudentCourseStatus @default(inprogress)
+
+  questions QuestionAndAnswer[]
+
+  review CourseReview?
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+}
+
+model StudentQuizPoint {
+  id Int @id @default(autoincrement())
+
+  points     Int
+  correct    Int
+  total_quiz Int
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+}
+
+model StudentAssignmentPoint {
+  id Int @id @default(autoincrement())
+
+  mark   Float?
+  intime Boolean
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+
+  courseAssignment   CourseAssignment? @relation(fields: [courseAssignmentId], references: [id])
+  courseAssignmentId Int?
+}
+
+enum StudentCourseStatus {
+  inprogress
+  completed
+}
+
+model CourseContentLink {
+  id    Int    @id @default(autoincrement())
+  title String
+  link  String
+
+  // relation 
+  contentId Int
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}
+
+model CourseContentQuiz {
+  id      Int      @id @default(autoincrement())
+  title   String
+  answer  String
+  options String[]
+
+  // relation 
+  contentId Int
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}

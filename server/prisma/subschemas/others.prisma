@@ -1,0 +1,67 @@
+import { Student } from "./student"
+import {Organization} from "./organization"
+import {Teacher} from "./teacher"
+
+model FollowingFollower {
+  id Int @id @default(autoincrement())
+
+  userType UserType
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  assignedAt DateTime @default(now())
+}
+
+
+
+
+
+model Link {
+  id   Int      @id @default(autoincrement())
+  type LinkType
+  link String
+
+  userType UserType
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+}
+
+
+
+
+
+enum LinkType {
+  facebook
+  instagram
+  twitter
+  linkedin
+  youtube
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserType {
+  organization
+  student
+  teacher
+}

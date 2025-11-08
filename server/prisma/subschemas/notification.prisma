@@ -1,0 +1,59 @@
+import {Admin} from "./admin"
+import {Teacher} from "./teacher"
+import {Student} from "./student"
+import {Organization} from "./organization"
+
+model Notification {
+    id Int @id @default(autoincrement())
+
+    text String
+
+    createdAt DateTime @default(now())
+
+    link String
+
+    sender SenderReceiver @relation(name: "sender", fields: [senderId], references: [id])
+
+    receiver SenderReceiver @relation(name: "receiver", fields: [receiverId], references: [id])
+
+    isViewed Boolean @default(false)
+
+    senderId   Int
+    receiverId Int
+}
+
+model SenderReceiver {
+  id Int @id @default(autoincrement())
+
+  userType NotificationUser
+
+  type NotificationUserType
+
+  adminId Int?
+  admin   Admin? @relation(fields: [adminId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  senderNotification   Notification[] @relation(name: "sender")
+  receiverNotification Notification[] @relation(name: "receiver")
+}
+
+
+enum NotificationUserType {
+    sender
+    receiver
+}
+
+enum NotificationUser {
+    admin
+    student
+    teacher
+    organization
+}

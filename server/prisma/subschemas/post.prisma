@@ -1,0 +1,92 @@
+import { Student } from "./student"
+import {Organization} from "./organization"
+import {Teacher} from "./teacher"
+import {UserType} from "./others"
+
+model Post {
+  id Int @id @default(autoincrement())
+
+  text String
+  img  String?
+
+  userType UserType
+
+  policy PostPolicy @default(public)
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  comments Comment[]
+  likes    PostLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+
+enum PostPolicy {
+  public
+  followers
+  onlyme
+}
+
+model PostLike {
+  id Int @id @default(autoincrement())
+
+  userType UserType
+
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+
+
+
+
+model Comment {
+  id Int @id @default(autoincrement())
+
+  img     String?
+  message String?
+
+  replies         Comment[] @relation("replies")
+  repliesRelation Comment[] @relation("replies")
+
+  userType UserType
+
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+

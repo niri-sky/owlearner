@@ -1,0 +1,38 @@
+import {Todo} from "./todo"
+import {TicketMessage} from "./ticket"
+import {SenderReceiver} from "./notification"
+
+model Admin {
+    id             Int              @id @default(autoincrement())
+    name           String
+    email          String           @unique
+    password       String?
+    profile        String?
+    role           AdminRole
+    joinedAt       DateTime         @default(now())
+    status         AdminStatus?     @default(pending)
+    updatedAt      DateTime         @updatedAt
+    // relations
+    todos          Todo[]
+    ticketMessages TicketMessage[]
+    senderReceiver SenderReceiver[]
+}
+
+
+enum AdminStatus {
+      pending
+      active
+}
+
+
+
+
+
+
+
+
+
+enum AdminRole {
+  admin
+  moderator
+}

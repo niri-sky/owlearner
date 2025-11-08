@@ -1,0 +1,57 @@
+import {Organization} from "./organization"
+import {AdminStatus} from "./admin"
+import {Teacher} from "./teacher"
+import { PostLike, Comment, Post } from "./post"
+import {Ticket,TicketMessage} from "./ticket"
+import {FollowingFollower,Link} from "./others"
+import {Invoice,PaymentInvoice} from "./invoice"
+import {Course} from "./course"
+import { Post } from "./post"
+import {Coupon} from "./coupon"
+import {SenderReceiver} from "./notification"
+import {TeacherEarning} from "./earning"
+model Teacher {
+          id        Int     @id @default(autoincrement())
+          // user info
+          name      String
+          nickName  String?
+          title     String?
+          birthDate String?
+          gender    String?
+          biography String?
+
+          email    String  @unique
+          password String
+          profile  String?
+
+          cover String?
+
+          username  String?     @unique
+          joinedAt  DateTime    @default(now())
+          updatedAt DateTime    @updatedAt
+          status    AdminStatus @default(pending)
+
+          verified Boolean @default(false)
+
+          // relation
+          organizationId Int?
+          organization   Organization? @relation(fields: [organizationId], references: [id])
+
+          // relation
+          links Link[]
+
+          courses Course[]
+
+          posts Post[]
+
+          followers      FollowingFollower[]
+          likes          PostLike[]
+          ticketMessages TicketMessage[]
+          postComments   Comment[]
+          tickets        Ticket[]
+
+          paymentInvoice PaymentInvoice[]
+          senderReceiver SenderReceiver[]
+          teacherEarning TeacherEarning?
+}
+

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            body {
+                background-color: #eff3fb;
+            }
+            .container {
+                width: 95%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            @media (min-width: 375px) {
+                .container {
+                    max-width: 375px;
+                    padding-right: 20px;
+                    padding-left: 20px;
+                }
+            }
+            @media (min-width: 680px) {
+                .container {
+                    max-width: 680px;
+                    padding-right: 40px;
+                    padding-left: 40px;
+                }
+            }
+            p {
+                font-size: 14px;
+            }
+            @media (min-width: 680px) {
+                p {
+                    font-size: 16px;
+                }
+            }
+            .card {
+                padding: 32px;
+            }
+            @media (min-width: 680px) {
+                .card {
+                    padding: 50px !important;
+                }
+            }
+            h4 {
+                font-size: 16px;
+                color: #666;
+                font-weight: 600;
+            }
+
+            .iconpadding {
+                padding-top: 24px;
+                padding-bottom: 24px;
+            }
+            @media (min-width: 680px) {
+                .iconpadding {
+                    padding-top: 40px !important;
+                    padding-bottom: 40px !important;
+                }
+            }
+            .iconpaddingleft {
+                padding-left: 24px;
+                display: inline;
+            }
+            @media (min-width: 680px) {
+                .iconpaddingleft {
+                    padding-left: 40px !important;
+                }
+            }
+            a {
+                font-size: 16px;
+            }
+            .imglogo {
+                width: 132px;
+            }
+            @media (min-width: 680px) {
+                .imglogo {
+                    width: 150px !important;
+                }
+            }
+            h1,
+            h4 {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    <body>
+
+            <div class="container">
+                <table
+                    role="presentation"
+                    border="0"
+                    width="100%"
+                    cellspacing="0"
+                >
+                    <tr>
+                        <td
+                            style="border-radius: 10px"
+                            align="center"
+                            class="card"
+                            bgcolor="#fff"
+                        >
+                            <h1 style="text-align: center">
+                                Email Verification
+                            </h1>
+                            <p
+                                style="
+                                    text-align: center;
+                                    margin-top: 24px;
+                                    margin-bottom: 20px;
+                                "
+                            >
+                                Hey <%= typeof locals.name !== 'undefined'? locals.name :''%>, your email verification code is
+                                
+                            </p>
+                            <div
+                                style="
+                                    font-weight: 700;
+                                    display: inline-block;
+                                    border-radius: 6px;
+                                    padding: 12px 40px;
+                                    font-size: 32px;
+                                    margin-bottom: 20px;
+
+                            
+                                    text-decoration: none;
+                                "
+                        
+                                ><%= typeof locals.code !== 'undefined'?
+                                locals.code :''%></div
+                            >
+
+
+
+
+                            <h4>Thanks!<br /><%= typeof locals.APP_NAME != 'undefined' ? locals.APP_NAME : 'Owl Learner' %></h4>
+                        </td>
+                    </tr>
+                </table>
+              
+            </div>
+            <!--[if gte mso 9]>
+</v:textbox>
+</v:rect>
+<![endif]-->
+        </div>
+    </body>
+</html>

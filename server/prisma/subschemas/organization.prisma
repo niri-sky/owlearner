@@ -1,0 +1,40 @@
+import {AdminStatus} from "./admin"
+import {Teacher} from "./teacher"
+import {PostLike,Comment,Post} from "./post"
+import {Ticket,TicketMessage} from "./ticket"
+import {FollowingFollower} from "./others"
+import { Link } from "./others"
+import {PaymentInvoice} from "./invoice"
+import {SenderReceiver} from "./notification"
+import {OrganizationEarning} from "./earning"
+
+model Organization {
+      id        Int      @id @default(autoincrement())
+      name      String
+      email     String   @unique
+      password  String?
+      profile   String?
+      joinedAt  DateTime @default(now())
+      updatedAt DateTime @updatedAt
+      verified  Boolean  @default(false)
+
+      cover String?
+
+      username String?
+
+      status              AdminStatus          @default(pending)
+      // relation
+      teachers            Teacher[]
+      posts               Post[]
+      followers           FollowingFollower[]
+      likes               PostLike[]
+      ticketMessages      TicketMessage[]
+      postComments        Comment[]
+      tickets             Ticket[]
+      links               Link[]
+      paymentInvoice      PaymentInvoice[]
+      senderReceiver      SenderReceiver[]
+      organizationEarning OrganizationEarning?
+}
+
+

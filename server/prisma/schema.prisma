@@ -1,0 +1,817 @@
+//🧩Don't Edit this file.✨Generated in Tue May 07 2024 13:54:32 GMT+0600 (Bangladesh Standard Time)✨
+
+model Admin {
+  id             Int              @id @default(autoincrement())
+  name           String
+  email          String           @unique
+  password       String?
+  profile        String?
+  role           AdminRole
+  joinedAt       DateTime         @default(now())
+  status         AdminStatus?     @default(pending)
+  updatedAt      DateTime         @updatedAt
+  // relations
+  todos          Todo[]
+  ticketMessages TicketMessage[]
+  senderReceiver SenderReceiver[]
+}
+
+enum AdminStatus {
+  pending
+  active
+}
+
+enum AdminRole {
+  admin
+  moderator
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator nestgraphql {
+  provider                   = "node node_modules/prisma-nestjs-graphql"
+  output                     = "../src/graphql/@generated"
+  combineScalarFilters       = true
+  noAtomicOperations         = true
+  types_DateTime_fieldType   = "Date | string"
+  types_DateTime_graphqlType = "Date"
+  purgeOutput                = true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String
+  subcategories SubCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SubCategory {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  topics Topic[]
+
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+}
+
+model Topic {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  subcategoryId Int?
+  subcategory   SubCategory? @relation(fields: [subcategoryId], references: [id])
+}
+
+model Coupon {
+  id Int @id @default(autoincrement())
+
+  name String @default("Coupon")
+
+  code String
+
+  discount Float
+  type     CouponType
+
+  couponUsed CouponUsed[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Invoice Invoice[]
+}
+
+enum CouponType {
+  percent
+  amount
+}
+
+model CouponUsed {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  couponId Int
+  coupon   Coupon @relation(fields: [couponId], references: [id])
+
+  date DateTime @default(now())
+}
+
+model Course {
+  id Int @id @default(autoincrement())
+
+  slug String @unique
+
+  title               String
+  description         String
+  price               Float
+  estimated_price     Float?
+  demo_file           String
+  duration            String
+  level               String
+  language            String
+  subtitle_language   String?
+  course_tags         String
+  course_category     String
+  course_subcategory  String
+  popular_topics      String
+  thumbnail           String
+  what_you_will_learn String[]
+  course_requirements String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status CourseStatus @default(pending)
+
+  // relation
+  section  CourseSection[]
+  invoices Invoice[]
+
+  studentCourse StudentCourse[]
+
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  wishlistStudent Student[] @relation("CartToStudent")
+  cartStudent     Student[] @relation("WishlistToStudent")
+
+  reviews     CourseReview[]
+  courseSales CourseSale[]
+}
+
+model CourseReview {
+  id     Int    @id @default(autoincrement())
+  rating Float
+  text   String
+
+  createdAt DateTime @default(now())
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId Int
+
+  studentCourse   StudentCourse @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int           @unique
+}
+
+enum CourseStatus {
+  pending
+  live
+  draft
+  declined
+}
+
+model CourseSection {
+  id           Int    @id @default(autoincrement())
+  section_name String
+
+  content CourseContent[]
+
+  // relation
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+}
+
+model CourseContent {
+  id                Int    @id @default(autoincrement())
+  video_title       String
+  video_description String
+  file              String
+
+  resources CourseResourse[]
+
+  video_duration Int?
+
+  // relation
+  sectionId Int
+  section   CourseSection @relation(fields: [sectionId], references: [id])
+
+  links   CourseContentLink[]
+  quizzes CourseContentQuiz[]
+
+  questions QuestionAndAnswer[]
+
+  assignment CourseAssignment?
+
+  studentQuizPoint StudentQuizPoint[]
+}
+
+model CourseResourse {
+  id Int @id @default(autoincrement())
+
+  name String
+  src  String
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+}
+
+model QuestionAndAnswer {
+  id Int @id @default(autoincrement())
+
+  question String
+
+  answer String?
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+}
+
+model CourseAssignment {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  deadline DateTime
+  details  String
+
+  mark Float
+
+  submit StudentAssignmentPoint[]
+
+  // relation 
+  contentId Int           @unique
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}
+
+model StudentCourse {
+  id Int @id @default(autoincrement())
+
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+
+  quiz_points StudentQuizPoint[]
+
+  assignment_points StudentAssignmentPoint[]
+
+  certificate String?
+
+  status StudentCourseStatus @default(inprogress)
+
+  questions QuestionAndAnswer[]
+
+  review CourseReview?
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+}
+
+model StudentQuizPoint {
+  id Int @id @default(autoincrement())
+
+  points     Int
+  correct    Int
+  total_quiz Int
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+
+  courseContent   CourseContent? @relation(fields: [courseContentId], references: [id])
+  courseContentId Int?
+}
+
+model StudentAssignmentPoint {
+  id Int @id @default(autoincrement())
+
+  mark   Float?
+  intime Boolean
+
+  studentCourse   StudentCourse? @relation(fields: [studentCourseId], references: [id])
+  studentCourseId Int?
+
+  courseAssignment   CourseAssignment? @relation(fields: [courseAssignmentId], references: [id])
+  courseAssignmentId Int?
+}
+
+enum StudentCourseStatus {
+  inprogress
+  completed
+}
+
+model CourseContentLink {
+  id    Int    @id @default(autoincrement())
+  title String
+  link  String
+
+  // relation 
+  contentId Int
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}
+
+model CourseContentQuiz {
+  id      Int      @id @default(autoincrement())
+  title   String
+  answer  String
+  options String[]
+
+  // relation 
+  contentId Int
+  content   CourseContent @relation(fields: [contentId], references: [id])
+}
+
+model TeacherEarning {
+  id Int @id @default(autoincrement())
+
+  earn Float @default(0)
+
+  withdraw Float @default(0)
+
+  sales CourseSale[]
+
+  organizationEarning   OrganizationEarning? @relation(fields: [organizationEarningId], references: [id])
+  organizationEarningId Int?
+
+  teacherId Int     @unique
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  paymentInvoices PaymentInvoice[]
+}
+
+model CourseSale {
+  id Int @id @default(autoincrement())
+
+  price Float
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId Int
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  teacherEarning   TeacherEarning? @relation(fields: [teacherEarningId], references: [id])
+  teacherEarningId Int?
+}
+
+model OrganizationEarning {
+  id Int @id @default(autoincrement())
+
+  earn Float @default(0)
+
+  withdraw Float @default(0)
+
+  teachersEarnings TeacherEarning[]
+
+  organizationId Int          @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  paymentInvoices PaymentInvoice[]
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  orderedAt DateTime @default(now())
+
+  price Float
+
+  courses Course[]
+
+  coupon   Coupon? @relation(fields: [couponId], references: [id])
+  couponId Int?
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+}
+
+model PaymentInvoice {
+  id Int @id @default(autoincrement())
+
+  userType InvoiceUserType
+
+  amount Float
+
+  requestDate DateTime @default(now())
+
+  bankDetails String
+
+  status InvoiceStatusType @default(pending)
+
+  to InvoiceToType
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  teacherEarnings      TeacherEarning[]
+  organizationEarnings OrganizationEarning[]
+}
+
+enum InvoiceToType {
+  admin
+  organization
+}
+
+enum InvoiceUserType {
+  teacher
+  organization
+}
+
+enum InvoiceStatusType {
+  declined
+  pending
+  inprogress
+  paid
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  text String
+
+  createdAt DateTime @default(now())
+
+  link String
+
+  sender SenderReceiver @relation(name: "sender", fields: [senderId], references: [id])
+
+  receiver SenderReceiver @relation(name: "receiver", fields: [receiverId], references: [id])
+
+  isViewed Boolean @default(false)
+
+  senderId   Int
+  receiverId Int
+}
+
+model SenderReceiver {
+  id Int @id @default(autoincrement())
+
+  userType NotificationUser
+
+  type NotificationUserType
+
+  adminId Int?
+  admin   Admin? @relation(fields: [adminId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  senderNotification   Notification[] @relation(name: "sender")
+  receiverNotification Notification[] @relation(name: "receiver")
+}
+
+enum NotificationUserType {
+  sender
+  receiver
+}
+
+enum NotificationUser {
+  admin
+  student
+  teacher
+  organization
+}
+
+model Organization {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String?
+  profile   String?
+  joinedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  verified  Boolean  @default(false)
+
+  cover String?
+
+  username String?
+
+  status              AdminStatus          @default(pending)
+  // relation
+  teachers            Teacher[]
+  posts               Post[]
+  followers           FollowingFollower[]
+  likes               PostLike[]
+  ticketMessages      TicketMessage[]
+  postComments        Comment[]
+  tickets             Ticket[]
+  links               Link[]
+  paymentInvoice      PaymentInvoice[]
+  senderReceiver      SenderReceiver[]
+  organizationEarning OrganizationEarning?
+}
+
+model FollowingFollower {
+  id Int @id @default(autoincrement())
+
+  userType UserType
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  assignedAt DateTime @default(now())
+}
+
+model Link {
+  id   Int      @id @default(autoincrement())
+  type LinkType
+  link String
+
+  userType UserType
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+}
+
+enum LinkType {
+  facebook
+  instagram
+  twitter
+  linkedin
+  youtube
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserType {
+  organization
+  student
+  teacher
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+
+  text String
+  img  String?
+
+  userType UserType
+
+  policy PostPolicy @default(public)
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  comments Comment[]
+  likes    PostLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PostPolicy {
+  public
+  followers
+  onlyme
+}
+
+model PostLike {
+  id Int @id @default(autoincrement())
+
+  userType UserType
+
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+
+  img     String?
+  message String?
+
+  replies         Comment[] @relation("replies")
+  repliesRelation Comment[] @relation("replies")
+
+  userType UserType
+
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id Int @id @default(autoincrement())
+
+  // user info
+  name      String
+  email     String  @unique
+  password  String?
+  nickName  String?
+  birthDate String?
+  gender    String?
+  biography String?
+
+  profile String?
+
+  cover String?
+
+  username String?
+
+  status StudentStatus @default(active)
+
+  verified Boolean @default(false)
+
+  joinedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation
+  links    Link[]
+  invoices Invoice[]
+
+  following      FollowingFollower[]
+  likes          PostLike[]
+  ticketMessages TicketMessage[]
+  postComments   Comment[]
+  tickets        Ticket[]
+
+  couponUsed CouponUsed[]
+
+  courses StudentCourse[]
+
+  cart           Course[]         @relation("CartToStudent")
+  wishlist       Course[]         @relation("WishlistToStudent")
+  senderReceiver SenderReceiver[]
+  courseSales    CourseSale[]
+}
+
+enum StudentStatus {
+  active
+  banned
+}
+
+model Teacher {
+  id        Int     @id @default(autoincrement())
+  // user info
+  name      String
+  nickName  String?
+  title     String?
+  birthDate String?
+  gender    String?
+  biography String?
+
+  email    String  @unique
+  password String
+  profile  String?
+
+  cover String?
+
+  username  String?     @unique
+  joinedAt  DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    AdminStatus @default(pending)
+
+  verified Boolean @default(false)
+
+  // relation
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  // relation
+  links Link[]
+
+  courses Course[]
+
+  posts Post[]
+
+  followers      FollowingFollower[]
+  likes          PostLike[]
+  ticketMessages TicketMessage[]
+  postComments   Comment[]
+  tickets        Ticket[]
+
+  paymentInvoice PaymentInvoice[]
+  senderReceiver SenderReceiver[]
+  teacherEarning TeacherEarning?
+}
+
+model Ticket {
+  id        Int             @id @default(autoincrement())
+  title     String
+  status    TicketStatus    @default(pending)
+  messages  TicketMessage[]
+  type      TicketType
+  studentId Int?
+  student   Student?        @relation(fields: [studentId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TicketType {
+  organization
+  student
+  teacher
+}
+
+enum TicketStatus {
+  pending
+  answered
+  solved
+}
+
+model TicketMessage {
+  id Int @id @default(autoincrement())
+
+  ticketId Int?
+  ticket   Ticket? @relation(fields: [ticketId], references: [id])
+
+  adminId Int?
+  admin   Admin? @relation(fields: [adminId], references: [id])
+
+  studentId Int?
+  student   Student? @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  organizationId Int?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  message String
+  date    DateTime @default(now())
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  note      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation
+  adminId Int
+  admin   Admin @relation(fields: [adminId], references: [id])
+}
+
+model Upload {
+  id       Int    @id @default(autoincrement())
+  file_url String
+}

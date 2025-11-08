@@ -1,0 +1,55 @@
+import { Course } from "./course"
+import { Student } from "./student"
+import { Teacher } from "./teacher"
+import { Organization } from "organization"
+import { PaymentInvoice } from "./invoice"
+
+model TeacherEarning {
+  id Int @id @default(autoincrement())
+
+  earn Float @default(0)
+
+  withdraw Float @default(0)
+
+  sales CourseSale[]
+
+  organizationEarning   OrganizationEarning? @relation(fields: [organizationEarningId], references: [id])
+  organizationEarningId Int?
+
+  teacherId Int     @unique
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  paymentInvoices PaymentInvoice[]
+}
+
+model CourseSale {
+  id Int @id @default(autoincrement())
+
+  price Float
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId Int
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  teacherEarning   TeacherEarning? @relation(fields: [teacherEarningId], references: [id])
+  teacherEarningId Int?
+}
+
+model OrganizationEarning {
+  id Int @id @default(autoincrement())
+
+  earn Float @default(0)
+
+  withdraw Float @default(0)
+
+  teachersEarnings TeacherEarning[]
+
+  organizationId Int          @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  paymentInvoices PaymentInvoice[]
+}
