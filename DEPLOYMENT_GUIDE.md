@@ -37,15 +37,17 @@ Your application requires **PostgreSQL** (as defined in the Prisma schema). Here
   2. Create a new project
   3. Copy the connection string (starts with `postgresql://`)
 
-#### Option 3: Supabase
+#### Option 3: Supabase (Popular Choice!)
 - **Website**: https://supabase.com
-- **Pros**: Includes auth, storage, real-time subscriptions (though you won't use these features)
+- **Pros**: Includes visual table editor, SQL editor, automatic backups, generous free tier
 - **Pricing**: Free tier includes 500 MB database, 2 GB bandwidth/month
 - **Setup**:
   1. Sign up at supabase.com
-  2. Create a new project
-  3. Go to Settings → Database
-  4. Copy the connection string (Connection Pooling recommended)
+  2. Create a new project (wait 2-3 minutes)
+  3. Go to Settings → Database → **Connection pooling** tab
+  4. Copy the connection string (use **Transaction mode**, port 6543)
+  5. **Important**: Replace `[YOUR-PASSWORD]` with your actual database password
+  6. **Detailed setup guide**: See [SUPABASE_SETUP_GUIDE.md](./SUPABASE_SETUP_GUIDE.md)
 
 #### Option 4: Railway
 - **Website**: https://railway.app

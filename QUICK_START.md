@@ -31,6 +31,15 @@ This is a condensed guide for rapid deployment. For detailed instructions, see [
 3. Copy connection string from dashboard
 4. **Save this** - you'll need it soon!
 
+**Option C: Use Supabase (Free tier + extras)**
+1. Go to https://supabase.com
+2. Create new project (wait 2-3 minutes)
+3. Settings → Database → **Connection pooling** tab
+4. Copy the connection string (port 6543)
+5. Replace `[YOUR-PASSWORD]` with your actual password
+6. **Save this** - you'll need it soon!
+7. **Detailed guide:** See [SUPABASE_SETUP_GUIDE.md](./SUPABASE_SETUP_GUIDE.md)
+
 ---
 
 ### Step 2: Get Required API Keys (10 minutes)

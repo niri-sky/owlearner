@@ -52,6 +52,15 @@ Detailed explanation of payment processing and teacher payouts.
 - What's NOT implemented (platform fees, Stripe Connect, refunds)
 - How to customize and add features
 
+### 🐘 [SUPABASE_SETUP_GUIDE.md](./SUPABASE_SETUP_GUIDE.md)
+Step-by-step guide for setting up Supabase as your PostgreSQL database.
+- Create Supabase project
+- Get connection string (with pooling!)
+- Run Prisma migrations (no SQL files needed!)
+- Verify tables were created
+- Troubleshooting common issues
+- Security best practices
+
 ---
 
 ## 🏗️ Architecture
