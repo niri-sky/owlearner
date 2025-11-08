@@ -42,6 +42,16 @@ Complete reference for all environment variables.
 - Copy-paste templates
 - Platform-specific notes
 
+### 💳 [STRIPE_PAYMENT_FLOW.md](./STRIPE_PAYMENT_FLOW.md)
+Detailed explanation of payment processing and teacher payouts.
+- How Stripe is integrated
+- Payment flow breakdown
+- Teacher earnings system
+- Manual payout/withdrawal process
+- Organization earnings
+- What's NOT implemented (platform fees, Stripe Connect, refunds)
+- How to customize and add features
+
 ---
 
 ## 🏗️ Architecture
@@ -349,6 +359,9 @@ See [ENV_VARIABLES_REFERENCE.md](./ENV_VARIABLES_REFERENCE.md) for complete deta
 
 **Looking for specific variables?**  
 → See [ENV_VARIABLES_REFERENCE.md](./ENV_VARIABLES_REFERENCE.md)
+
+**Understanding payment flow?**  
+→ Read [STRIPE_PAYMENT_FLOW.md](./STRIPE_PAYMENT_FLOW.md)
 
 ---
 
