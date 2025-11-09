@@ -25,6 +25,7 @@ import { StudentModule } from './modules/student/student.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { StripeConnectModule } from './modules/stripe-connect/stripe-connect.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { UploadModule } from './modules/upload/upload.module';
     NotificationModule,
     SaleModule,
     PubsubModule,
+    StripeConnectModule, // Stripe Connect for automated payouts
   ],
 })
 export class AppModule {}
