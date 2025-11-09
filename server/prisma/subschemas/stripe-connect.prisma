@@ -1,0 +1,154 @@
+// Stripe Connect Models
+// Created: 2025-11-09
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum ConnectAccountStatus {
+  incomplete
+  pending
+  active
+  restricted
+  rejected
+}
+
+enum TransferStatus {
+  pending
+  processing
+  completed
+  failed
+  refunded
+}
+
+enum RefundReason {
+  student_request
+  course_not_as_described
+  technical_issues
+  duplicate_charge
+  fraudulent
+  other
+}
+
+enum RefundStatus {
+  pending
+  processing
+  completed
+  rejected
+  cancelled
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model StripeConnectAccount {
+  id                    Int                    @id @default(autoincrement())
+  stripeAccountId       String                 @unique
+  accountStatus         ConnectAccountStatus   @default(incomplete)
+  detailsSubmitted      Boolean                @default(false)
+  chargesEnabled        Boolean                @default(false)
+  payoutsEnabled        Boolean                @default(false)
+  
+  // Onboarding
+  onboardingUrl         String?
+  onboardingExpiresAt   DateTime?
+  
+  // Account info (cached from Stripe)
+  email                 String?
+  businessType          String?
+  country               String?                @default("US")
+  
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  
+  // Relations - One account per teacher OR organization
+  teacherId             Int?                   @unique
+  teacher               Teacher?               @relation(fields: [teacherId], references: [id])
+  
+  organizationId        Int?                   @unique
+  organization          Organization?          @relation(fields: [organizationId], references: [id])
+  
+  transfers             StripeTransfer[]
+
+  @@index([teacherId])
+  @@index([organizationId])
+  @@index([accountStatus])
+  @@index([stripeAccountId])
+}
+
+model StripeTransfer {
+  id                    Int                    @id @default(autoincrement())
+  stripeTransferId      String?                @unique
+  
+  amount                Float
+  platformFee           Float
+  netAmount             Float
+  
+  status                TransferStatus         @default(pending)
+  
+  // Timing
+  saleDate              DateTime
+  scheduledTransferDate DateTime
+  actualTransferDate    DateTime?
+  
+  failureReason         String?
+  
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  
+  // Relations
+  courseSaleId          Int                    @unique
+  courseSale            CourseSale             @relation(fields: [courseSaleId], references: [id])
+  
+  connectAccountId      Int
+  connectAccount        StripeConnectAccount   @relation(fields: [connectAccountId], references: [id])
+
+  @@index([connectAccountId])
+  @@index([courseSaleId])
+  @@index([status])
+  @@index([scheduledTransferDate])
+  @@index([status, scheduledTransferDate])
+}
+
+model Refund {
+  id                    Int                    @id @default(autoincrement())
+  stripeRefundId        String                 @unique
+  
+  amount                Float
+  reason                RefundReason
+  status                RefundStatus           @default(pending)
+  
+  // Timing
+  requestedAt           DateTime               @default(now())
+  processedAt           DateTime?
+  
+  // Relations
+  courseSaleId          Int                    @unique
+  courseSale            CourseSale             @relation(fields: [courseSaleId], references: [id])
+  
+  studentId             Int
+  student               Student                @relation(fields: [studentId], references: [id])
+  
+  invoiceId             Int
+  invoice               Invoice                @relation(fields: [invoiceId], references: [id])
+
+  @@index([studentId])
+  @@index([courseSaleId])
+  @@index([status])
+  @@index([requestedAt])
+}
+
+model PlatformEarning {
+  id                    Int                    @id @default(autoincrement())
+  amount                Float
+  
+  createdAt             DateTime               @default(now())
+  
+  // Relations
+  courseSaleId          Int                    @unique
+  courseSale            CourseSale             @relation(fields: [courseSaleId], references: [id])
+
+  @@index([courseSaleId])
+  @@index([createdAt])
+}

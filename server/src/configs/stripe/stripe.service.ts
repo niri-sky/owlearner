@@ -11,12 +11,21 @@ export class StripeService {
     });
   }
 
-  async createPaymentIntends(amount: number) {
+  async createPaymentIntends(
+    amount: number,
+    metadata?: Record<string, string>,
+  ) {
     amount = Number((amount * 100).toFixed(0));
     return this.stripe.paymentIntents.create({
       amount,
       currency: 'usd',
       payment_method_types: ['card'],
+      metadata: metadata || {},
+      capture_method: 'automatic',
     });
+  }
+
+  getStripe() {
+    return this.stripe;
   }
 }
